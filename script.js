@@ -76,7 +76,7 @@ const gameController = (() => {
     }
 
     const switchActivePlayer = () => {
-        gameController.getActivePlayer() === eloise ? gameController.setActivePlayer(james) : gameController.setActivePlayer(eloise);
+        gameController.getActivePlayer() === player2 ? gameController.setActivePlayer(player1) : gameController.setActivePlayer(player2);
     }
 
     const isCellUnmarked = (gameBoardCell) => {
@@ -126,15 +126,15 @@ const gameController = (() => {
         // check for a winner
         for (line of possibleWinningLines) {
             if (line.every((element) => element === 'X')) {
-                alert("James wins")
+                alert("Player 1 (X) wins")
                 displayController.resetGameBoard();
-                gameController.beginNewGame(james, eloise);
+                gameController.beginNewGame(player1, player2);
             }
 
             if (line.every((element) => element === 'O')) {
-                alert("Eloise wins")
+                alert("Player 2 (O) wins")
                 displayController.resetGameBoard();
-                gameController.beginNewGame(james, eloise);
+                gameController.beginNewGame(player1, player2);
             }
         }
 
@@ -151,7 +151,7 @@ const gameController = (() => {
         if (totalMoves === 9) {
             alert("Draw");
             displayController.resetGameBoard();
-            gameController.beginNewGame(james, eloise);
+            gameController.beginNewGame(player1, player2);
         }
     }
 
@@ -177,9 +177,9 @@ gameBoard.attachEventHandlers();
 let resetButton = document.querySelector('#reset-button');
 resetButton.addEventListener('click', () => {
     displayController.resetGameBoard();
-    gameController.beginNewGame(james, eloise);
+    gameController.beginNewGame(player1, player2);
 })
 
-const james = Player('James', 'X');
-const eloise = Player('Eloise', 'O');
-gameController.beginNewGame(james, eloise);
+const player1 = Player('Player 1 (X)', 'X');
+const player2 = Player('Player 2 (O)', 'O');
+gameController.beginNewGame(player1, player2);
