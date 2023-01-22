@@ -1,3 +1,7 @@
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
 const gameBoard = (() => {
 
     const attachEventHandlers = () => {
@@ -19,10 +23,15 @@ const gameBoard = (() => {
 
 const displayController = (() => {
 
-    const markPlayerClick = (gameBoardCell, activePlayer) => {
+    const markPlayerClick = async (gameBoardCell, activePlayer) => {
         if (gameController.isCellUnmarked(gameBoardCell)) {
             gameBoardCell.innerText = activePlayer.getSymbol();
             gameController.switchActivePlayer();
+            await sleep(200); // this sleep is here to ensure the symbol gets drawn to the DOM before the next line
+            if (gameController.checkForWinner() != 0) {
+                return;
+            }
+            
         }
     }
 
@@ -77,13 +86,74 @@ const gameController = (() => {
         return gameBoardCell.innerText === '-';
     }
 
+    const checkForWinner = () => {
+        const mainContainer = document.querySelector('#main-container');
+        const rows = mainContainer.children;
+
+        let possibleWinningLines = [];
+        
+        // winning rows
+        for (i=0; i<rows.length; i++) {
+            possibleWinningLines.push([]);
+            gameBoardCells = rows[i].children;
+            for (j=0; j<gameBoardCells.length; j++) {
+                possibleWinningLines[i].push(gameBoardCells[j].innerText);
+            }
+        }
+
+        // winning columns
+        for (i=0; i<3; i++) {
+            possibleWinningLines.push([]);
+            for (j=0; j<rows.length; j++) {
+                possibleWinningLines[3+i].push(rows[j].children[i].innerText)
+            }
+        }
+
+        // winning diagonals
+        // TODO - can this be neater?
+        possibleWinningLines.push(
+            [
+                rows[0].children[0].innerText,
+                rows[1].children[1].innerText,
+                rows[2].children[2].innerText
+            ]
+        )
+        possibleWinningLines.push(
+            [
+                rows[2].children[0].innerText,
+                rows[1].children[1].innerText,
+                rows[0].children[2].innerText
+            ]
+        )
+
+
+        console.log(possibleWinningLines)
+
+        for (line of possibleWinningLines) {
+            if (line.every((element) => element === 'X')) {
+                alert("James wins")
+                displayController.resetGameBoard();
+                gameController.beginNewGame(james, eloise);
+            }
+
+            if (line.every((element) => element === 'O')) {
+                alert("Eloise wins")
+                displayController.resetGameBoard();
+                gameController.beginNewGame(james, eloise);
+            }
+        }
+
+        return 0;
+    }
+
     return {
         beginNewGame,
         getRandomStartingPlayer,
         getActivePlayer,
         setActivePlayer,
         switchActivePlayer,
-        isCellUnmarked
+        isCellUnmarked,
+        checkForWinner
     }
 })();
 

@@ -1,6 +1,20 @@
 #main-container {
     display: grid;
-    align-self: center;
-    grid-template-columns: 50px 50px 50px;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-auto-flow: column;
+    width: 600px;
+    height: 150px;
+    grid-template-columns: repeat(3, 600px);
+    grid-template-rows: repeat(3, 50px);
+}
+
+.gameBoardRow {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: repeat(3, 200px);
+    justify-content: center;
+}
+
+.gameBoardCell {
+    display: grid;
+    justify-content: center;
 }
