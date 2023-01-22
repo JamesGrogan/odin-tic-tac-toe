@@ -28,10 +28,7 @@ const displayController = (() => {
             gameBoardCell.innerText = activePlayer.getSymbol();
             gameController.switchActivePlayer();
             await sleep(200); // this sleep is here to ensure the symbol gets drawn to the DOM before the next line
-            if (gameController.checkForWinner() != 0) {
-                return;
-            }
-            
+            gameController.checkForWinner();
         }
     }
 
@@ -126,9 +123,7 @@ const gameController = (() => {
             ]
         )
 
-
-        console.log(possibleWinningLines)
-
+        // check for a winner
         for (line of possibleWinningLines) {
             if (line.every((element) => element === 'X')) {
                 alert("James wins")
@@ -143,7 +138,21 @@ const gameController = (() => {
             }
         }
 
-        return 0;
+        // check for draw
+        let totalMoves = 0;
+        for (i=0; i<rows.length; i++) {
+            gameBoardCells = rows[i].children;
+            for (j=0; j<gameBoardCells.length; j++) {
+                if (gameBoardCells[j].innerText != '-') {
+                    totalMoves += 1;
+                }
+            }
+        }
+        if (totalMoves === 9) {
+            alert("Draw");
+            displayController.resetGameBoard();
+            gameController.beginNewGame(james, eloise);
+        }
     }
 
     return {
