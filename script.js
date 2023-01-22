@@ -36,10 +36,38 @@ const displayController = (() => {
         gameBoardCell.innerText = 'X';
     }
 
+    const clearBoard = () => {
+        const gameBoardCells = document.getElementsByClassName('gameBoardCell');
+        for (let cell of gameBoardCells) {
+            cell.innerText = '-';
+        }
+    }
+
     return {
-        markPlayerClick
+        markPlayerClick,
+        clearBoard
     }
 })();
 
+const gameController = (() => {
+    const beginNewGame = () => {
+        return
+    };
+
+    return {beginNewGame}
+})();
+
+const Player = (name, symbol) => {
+    const getName = () => name;
+    const getSymbol = () => symbol;
+
+    return {getName, getSymbol};
+}
+
 gameBoard.createGameBoard();
 gameBoard.attachEventHandlers();
+const james = Player('James', 'X');
+const eloise = Player('Eloise', 'O');
+
+let resetButton = document.querySelector('#reset-button');
+resetButton.addEventListener('click', displayController.clearBoard); 
