@@ -96,9 +96,11 @@ const Player = (name, symbol) => {
 
 gameBoard.attachEventHandlers();
 let resetButton = document.querySelector('#reset-button');
-resetButton.addEventListener('click', displayController.resetGameBoard);
+resetButton.addEventListener('click', () => {
+    displayController.resetGameBoard();
+    gameController.beginNewGame(james, eloise);
+})
 
 const james = Player('James', 'X');
 const eloise = Player('Eloise', 'O');
-
 gameController.beginNewGame(james, eloise);
