@@ -1,60 +1,90 @@
 const gameBoard = (() => {
-    const mainContainer = document.querySelector('#main-container');
-    const rows = mainContainer.children;
-    let board = new Array('X', 'X', 'O', 'X', 'O', 'X', 'X', 'X', 'X');
-
-    const createGameBoard = () => {
-        let k=0;
-        for (i=0; i<rows.length; i++) {
-            for (j=0; j<3; j++) {
-                const newCell = document.createElement('div');
-                newCell.classList.add('gameBoardCell');
-                newCell.innerText = board[i+j+k]
-                rows[i].appendChild(newCell);
-            }
-            k += 2;
-        }
-    }
 
     const attachEventHandlers = () => {
         const gameBoardCells = document.getElementsByClassName('gameBoardCell');
         for (let i=0; i<gameBoardCells.length; i++) {
             gameBoardCells[i].addEventListener('click', (e) => {
-                displayController.markPlayerClick(e.target);
+                displayController.markPlayerClick(
+                    e.target,
+                    gameController.getActivePlayer()
+                );
             })
         }
     }
 
     return {
-        createGameBoard,
         attachEventHandlers
     }
 })();
 
 const displayController = (() => {
-    const markPlayerClick = (gameBoardCell) => {
-        gameBoardCell.innerText = 'X';
+
+    const markPlayerClick = (gameBoardCell, activePlayer) => {
+        if (gameController.isCellUnmarked(gameBoardCell)) {
+            gameBoardCell.innerText = activePlayer.getSymbol();
+            gameController.switchActivePlayer();
+        }
     }
 
-    const clearBoard = () => {
-        const gameBoardCells = document.getElementsByClassName('gameBoardCell');
-        for (let cell of gameBoardCells) {
-            cell.innerText = '-';
-        }
+    const resetGameBoard = () => {
+        const mainContainer = document.querySelector('#main-container');
+        const rows = mainContainer.children;
+    
+            for (row of rows){
+                gameBoardCells = row.children;
+                for (gameBoardCell of gameBoardCells) {
+                    gameBoardCell.innerText = '-'
+                }
+            }
     }
 
     return {
         markPlayerClick,
-        clearBoard
+        resetGameBoard
     }
 })();
 
 const gameController = (() => {
-    const beginNewGame = () => {
-        return
+    let activePlayer;
+
+    const beginNewGame = (player1, player2) => {
+        const startingPlayer = gameController.getRandomStartingPlayer(player1, player2);
+        alert(`${startingPlayer.getName()} goes first`);
+        gameController.setActivePlayer(startingPlayer);
+
     };
 
-    return {beginNewGame}
+    const getRandomStartingPlayer = (player1, player2) => {
+        const players = [player1, player2];
+        const randomIndex = Math.floor(Math.random() * 2);
+        const startingPlayer = players[randomIndex]
+        return startingPlayer;
+    };
+
+    const getActivePlayer = () => {
+        return gameController.activePlayer;
+    }
+
+    const setActivePlayer = (player) => {
+        gameController.activePlayer = player;
+    }
+
+    const switchActivePlayer = () => {
+        gameController.getActivePlayer() === eloise ? gameController.setActivePlayer(james) : gameController.setActivePlayer(eloise);
+    }
+
+    const isCellUnmarked = (gameBoardCell) => {
+        return gameBoardCell.innerText === '-';
+    }
+
+    return {
+        beginNewGame,
+        getRandomStartingPlayer,
+        getActivePlayer,
+        setActivePlayer,
+        switchActivePlayer,
+        isCellUnmarked
+    }
 })();
 
 const Player = (name, symbol) => {
@@ -64,10 +94,11 @@ const Player = (name, symbol) => {
     return {getName, getSymbol};
 }
 
-gameBoard.createGameBoard();
 gameBoard.attachEventHandlers();
+let resetButton = document.querySelector('#reset-button');
+resetButton.addEventListener('click', displayController.resetGameBoard);
+
 const james = Player('James', 'X');
 const eloise = Player('Eloise', 'O');
 
-let resetButton = document.querySelector('#reset-button');
-resetButton.addEventListener('click', displayController.clearBoard); 
+gameController.beginNewGame(james, eloise);
