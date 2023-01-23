@@ -27,7 +27,7 @@ const displayController = (() => {
         if (gameController.isCellUnmarked(gameBoardCell)) {
             gameBoardCell.innerText = activePlayer.getSymbol();
             gameController.switchActivePlayer();
-            await sleep(200); // this sleep is here to ensure the symbol gets drawn to the DOM before the next line
+            await sleep(0); // this sleep is here to ensure the symbol gets drawn to the DOM before the next line
             gameController.checkForWinner();
         }
     }
